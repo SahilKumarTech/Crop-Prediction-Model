@@ -3,14 +3,15 @@ from flask import Flask, request, render_template
 import pickle
 import numpy as np
 
+# Create Flask app
 app = Flask(__name__)
 
-print("🚀 Starting Crop Prediction App...")
+print("🌱 Starting Crop Prediction App...")
 
-# Load model
+# Load the ML model
 try:
-    with open("crop_model.pkl", "rb") as f:
-        model = pickle.load(f)
+    with open('crop_model.pkl', 'rb') as file:
+        model = pickle.load(file)
     print("✅ Model loaded successfully!")
 except Exception as e:
     print(f"❌ Error loading model: {e}")
@@ -22,31 +23,31 @@ def home():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    if model is None:
-        return render_template('index.html', prediction_text='Model not loaded properly')
+    if not model:
+        return render_template('index.html', prediction_text='Model not available')
     
     try:
         # Get form data
-        n = float(request.form['N'])
-        p = float(request.form['P'])
-        k = float(request.form['K'])
-        temperature = float(request.form['temperature'])
-        humidity = float(request.form['humidity'])
-        ph = float(request.form['ph'])
-        rainfall = float(request.form['rainfall'])
+        data = [
+            float(request.form['N']),
+            float(request.form['P']),
+            float(request.form['K']),
+            float(request.form['temperature']),
+            float(request.form['humidity']),
+            float(request.form['ph']),
+            float(request.form['rainfall'])
+        ]
         
-        # Create features array
-        features = np.array([[n, p, k, temperature, humidity, ph, rainfall]])
+        # Make prediction
+        prediction = model.predict([data])
+        result = prediction[0]
         
-        # Predict
-        prediction = model.predict(features)
-        crop = prediction[0]
-        
-        return render_template('index.html', prediction_text=f'Recommended Crop: {crop}')
+        return render_template('index.html', prediction_text=f'Recommended Crop: {result}')
     
     except Exception as e:
-        return render_template('index.html', prediction_text=f'Error: {str(e)}')
+        return render_template('index.html', prediction_text=f'Error: Please check your inputs')
 
+# Run the app
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port, debug=False)
