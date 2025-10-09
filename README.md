@@ -45,7 +45,7 @@ This project helps farmers and agricultural researchers make data-driven crop se
 python -m webbrowser "http://127.0.0.1:5000/\"
 
 # Or just visit the URL in your browser:
-# https://crop-prediction-model-4.onrender.com/
+# https://crop-prediction-model-4.onrender.com
 
 
 
