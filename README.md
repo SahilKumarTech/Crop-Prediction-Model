@@ -26,11 +26,6 @@ This project helps farmers and agricultural researchers make data-driven crop se
 
 ---
 
-## ⚙️ Project Structure
-
-
-
-
 ---
 
 ## 🧠 How It Works
